@@ -1,30 +1,91 @@
 {
   "name": "odontogram-ui",
-  "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "description": "A React component library for rendering interactive dental odontograms.",
   "type": "module",
+  "license": "MIT",
+  "author": "dante2182 (https://github.com/dante2182)",
+  "homepage": "https://github.com/dante2182/odontogram-ui#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dante2182/odontogram-ui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dante2182/odontogram-ui/issues"
+  },
+  "keywords": [
+    "react",
+    "odontogram",
+    "dental",
+    "teeth",
+    "component-library",
+    "ui",
+    "typescript"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/odontogram-ui.cjs",
+  "module": "./dist/odontogram-ui.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/odontogram-ui.js",
+      "require": "./dist/odontogram-ui.cjs"
+    },
+    "./style.css": {
+      "types": "./dist/odontogram-ui.css.d.ts",
+      "default": "./dist/odontogram-ui.css"
+    },
+    "./package.json": "./package.json"
+  },
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build && node scripts/postbuild.mjs",
+    "preview": "vite preview",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "typecheck": "tsc -b",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "prepublishOnly": "pnpm lint && pnpm test:run && pnpm build"
   },
-  "dependencies": {
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@microsoft/api-extractor": "^7.59.4",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
+    "@vitest/coverage-v8": "^4.0.20",
     "eslint": "^10.10.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.6",
     "globals": "^17.12.0",
+    "jsdom": "^28.0.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.69.0",
-    "vite": "^8.3.0"
+    "vite": "^8.3.0",
+    "vite-plugin-dts": "^5.0.0",
+    "vitest": "^4.0.20"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
