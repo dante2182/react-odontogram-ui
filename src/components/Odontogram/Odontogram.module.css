@@ -17,7 +17,7 @@
     Inter,
     system-ui,
     -apple-system,
-    "Segoe UI",
+    'Segoe UI',
     sans-serif;
   border-radius: 12px;
 }
@@ -54,7 +54,7 @@
   background: transparent;
 }
 
-.mode[aria-pressed="true"] {
+.mode[aria-pressed='true'] {
   border-color: var(--odonto-text);
   font-weight: 600;
 }
@@ -175,15 +175,15 @@
   outline-offset: 1px;
 }
 
-.part[data-status="caries"] {
+.part[data-status='caries'] {
   fill: var(--odonto-caries);
 }
 
-.part[data-status="treated"] {
+.part[data-status='treated'] {
   fill: var(--odonto-treated);
 }
 
-.part[aria-disabled="true"] {
+.part[aria-disabled='true'] {
   cursor: not-allowed;
   opacity: 0.7;
 }

@@ -1,4 +1,11 @@
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import type {
   OdontogramProps,
   OdontogramValue,
@@ -11,7 +18,11 @@ import type { ToothRow } from './data'
 import styles from './Odontogram.module.css'
 import { Tooth } from './Tooth'
 
-const TOOLS: { mode: PaintMode; label: string; swatch?: 'caries' | 'treated' }[] = [
+const TOOLS: {
+  mode: PaintMode
+  label: string
+  swatch?: 'caries' | 'treated'
+}[] = [
   { mode: 'cycle', label: 'Cíclico' },
   { mode: 'caries', label: 'Caries / Mal estado', swatch: 'caries' },
   { mode: 'treated', label: 'Tratado / Buen estado', swatch: 'treated' },
@@ -56,7 +67,9 @@ export function Odontogram({
   readOnly = false,
   className,
 }: OdontogramProps) {
-  const [internalValue, setInternalValue] = useState<OdontogramValue>(defaultValue ?? {})
+  const [internalValue, setInternalValue] = useState<OdontogramValue>(
+    defaultValue ?? {},
+  )
   const [internalMode, setInternalMode] = useState<PaintMode>(defaultMode)
 
   const isControlled = value !== undefined
@@ -169,10 +182,12 @@ export function Odontogram({
           </button>
           <div className={styles.stats}>
             <span>
-              Caries / mal estado: <b className={styles.statValue}>{stats.caries}</b>
+              Caries / mal estado:{' '}
+              <b className={styles.statValue}>{stats.caries}</b>
             </span>
             <span>
-              Tratado / buen estado: <b className={styles.statValue}>{stats.treated}</b>
+              Tratado / buen estado:{' '}
+              <b className={styles.statValue}>{stats.treated}</b>
             </span>
             <span>Cíclico: Blanco → Rojo → Azul → Blanco</span>
           </div>

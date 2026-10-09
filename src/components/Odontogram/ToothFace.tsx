@@ -53,9 +53,7 @@ export const ToothFace = memo(function ToothFace({
   return (
     <g {...commonProps}>
       {d ? <path d={d} /> : <polygon points={points} />}
-      <title>
-        {`Diente ${tooth} · ${faceLabel(part)}`}
-      </title>
+      <title>{`Diente ${tooth} · ${faceLabel(part)}`}</title>
     </g>
   )
 })

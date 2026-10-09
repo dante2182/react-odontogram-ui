@@ -1,4 +1,9 @@
-import type { OdontogramValue, ToothNumber, ToothPart, ToothStatus } from '../../types'
+import type {
+  OdontogramValue,
+  ToothNumber,
+  ToothPart,
+  ToothStatus,
+} from '../../types'
 
 export interface ToothRow {
   /** true when the crowns point toward the opposite arch (upper arch). */
@@ -30,10 +35,30 @@ const quadrantTeeth = (quad: number, from: number, to: number): ToothNumber[] =>
 
 /** Display order: permanent upper, deciduous upper, deciduous lower, permanent lower. */
 export const TEETH_ROWS: ToothRow[] = [
-  { upper: true, deciduous: false, left: quadrantTeeth(1, 8, 1), right: quadrantTeeth(2, 1, 8) },
-  { upper: true, deciduous: true, left: quadrantTeeth(5, 5, 1), right: quadrantTeeth(6, 1, 5) },
-  { upper: false, deciduous: true, left: quadrantTeeth(8, 5, 1), right: quadrantTeeth(7, 1, 5) },
-  { upper: false, deciduous: false, left: quadrantTeeth(4, 8, 1), right: quadrantTeeth(3, 1, 8) },
+  {
+    upper: true,
+    deciduous: false,
+    left: quadrantTeeth(1, 8, 1),
+    right: quadrantTeeth(2, 1, 8),
+  },
+  {
+    upper: true,
+    deciduous: true,
+    left: quadrantTeeth(5, 5, 1),
+    right: quadrantTeeth(6, 1, 5),
+  },
+  {
+    upper: false,
+    deciduous: true,
+    left: quadrantTeeth(8, 5, 1),
+    right: quadrantTeeth(7, 1, 5),
+  },
+  {
+    upper: false,
+    deciduous: false,
+    left: quadrantTeeth(4, 8, 1),
+    right: quadrantTeeth(3, 1, 8),
+  },
 ]
 
 export const quadrantOf = (tooth: ToothNumber): number => Math.floor(tooth / 10)
@@ -83,8 +108,14 @@ export function rootPath(tooth: ToothNumber, deciduous: boolean): string {
 }
 
 /** Ready-to-render geometry for every paintable part of a tooth. */
-export function faceGeoms(tooth: ToothNumber, deciduous: boolean): ToothFaceGeom[] {
-  const ring: { part: ToothPart; face: 'top' | 'bottom' | 'left' | 'right' | 'center' }[] = [
+export function faceGeoms(
+  tooth: ToothNumber,
+  deciduous: boolean,
+): ToothFaceGeom[] {
+  const ring: {
+    part: ToothPart
+    face: 'top' | 'bottom' | 'left' | 'right' | 'center'
+  }[] = [
     { part: 'vestibular', face: 'top' },
     { part: 'lingual', face: 'bottom' },
     { part: 'mesial', face: mesialSide(tooth) },
@@ -102,7 +133,10 @@ export function faceGeoms(tooth: ToothNumber, deciduous: boolean): ToothFaceGeom
 export const CYCLE: readonly ToothStatus[] = ['normal', 'caries', 'treated']
 
 /** Mirror of the reference `applyClick` painting logic. */
-export function nextStatus(current: ToothStatus, mode: 'cycle' | 'caries' | 'treated' | 'eraser'): ToothStatus {
+export function nextStatus(
+  current: ToothStatus,
+  mode: 'cycle' | 'caries' | 'treated' | 'eraser',
+): ToothStatus {
   switch (mode) {
     case 'cycle':
       return CYCLE[(CYCLE.indexOf(current) + 1) % CYCLE.length] ?? 'normal'
@@ -114,7 +148,10 @@ export function nextStatus(current: ToothStatus, mode: 'cycle' | 'caries' | 'tre
   }
 }
 
-export function countStatuses(value: OdontogramValue): { caries: number; treated: number } {
+export function countStatuses(value: OdontogramValue): {
+  caries: number
+  treated: number
+} {
   let caries = 0
   let treated = 0
   for (const tooth of Object.values(value)) {

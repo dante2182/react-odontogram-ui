@@ -3,12 +3,7 @@ export type ToothNumber = number
 export type ToothStatus = 'normal' | 'caries' | 'treated'
 
 export type ToothPart =
-  | 'root'
-  | 'vestibular'
-  | 'lingual'
-  | 'mesial'
-  | 'distal'
-  | 'occlusal'
+  'root' | 'vestibular' | 'lingual' | 'mesial' | 'distal' | 'occlusal'
 
 export type ToothPartStatuses = Partial<Record<ToothPart, ToothStatus>>
 

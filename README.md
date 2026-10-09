@@ -28,14 +28,14 @@ pnpm add react react-dom
 ## Usage
 
 ```tsx
-import { useState } from "react";
-import { Odontogram } from "odontogram-ui";
-import type { OdontogramValue } from "odontogram-ui";
-import "odontogram-ui/style.css";
+import { useState } from 'react'
+import { Odontogram } from 'odontogram-ui'
+import type { OdontogramValue } from 'odontogram-ui'
+import 'odontogram-ui/style.css'
 
 export function DentalChart() {
-  const [value, setValue] = useState<OdontogramValue>({});
-  const [mode, setMode] = useState("cycle");
+  const [value, setValue] = useState<OdontogramValue>({})
+  const [mode, setMode] = useState('cycle')
 
   return (
     <Odontogram
@@ -44,26 +44,26 @@ export function DentalChart() {
       mode={mode}
       onModeChange={setMode}
     />
-  );
+  )
 }
 ```
 
 ### Uncontrolled
 
 ```tsx
-import { Odontogram } from "odontogram-ui";
-import "odontogram-ui/style.css";
+import { Odontogram } from 'odontogram-ui'
+import 'odontogram-ui/style.css'
 
 export function ReadOnlyChart() {
   return (
     <Odontogram
       readOnly
       defaultValue={{
-        18: { root: "caries", vestibular: "treated" },
-        48: { occlusal: "treated" },
+        18: { root: 'caries', vestibular: 'treated' },
+        48: { occlusal: 'treated' },
       }}
     />
-  );
+  )
 }
 ```
 
@@ -94,21 +94,16 @@ export function ReadOnlyChart() {
 ### Types
 
 ```ts
-type ToothStatus = "normal" | "caries" | "treated";
+type ToothStatus = 'normal' | 'caries' | 'treated'
 
 type ToothPart =
-  | "root"
-  | "vestibular"
-  | "lingual"
-  | "mesial"
-  | "distal"
-  | "occlusal";
+  'root' | 'vestibular' | 'lingual' | 'mesial' | 'distal' | 'occlusal'
 
-type ToothPartStatuses = Partial<Record<ToothPart, ToothStatus>>;
+type ToothPartStatuses = Partial<Record<ToothPart, ToothStatus>>
 
-type OdontogramValue = Partial<Record<number, ToothPartStatuses>>;
+type OdontogramValue = Partial<Record<number, ToothPartStatuses>>
 
-type PaintMode = "cycle" | "caries" | "treated" | "eraser";
+type PaintMode = 'cycle' | 'caries' | 'treated' | 'eraser'
 ```
 
 Every tooth renders 6 individually paintable SVG parts: the root and the five
@@ -153,20 +148,30 @@ import {
   rootPath, // SVG path for a tooth root
   TEETH_ROWS, // layout rows for permanent + deciduous arches
   CYCLE, // ['normal', 'caries', 'treated']
-} from "odontogram-ui";
+} from 'odontogram-ui'
 ```
 
 ## Development
 
 ```bash
 pnpm install
-pnpm dev        # playground at http://localhost:5173
-pnpm build      # build the library to dist/
-pnpm test       # run tests in watch mode
-pnpm test:run   # run tests once
-pnpm lint       # lint the project
-pnpm typecheck  # typecheck the project
+pnpm dev           # playground at http://localhost:5173
+pnpm build         # build the library to dist/
+pnpm test          # run tests in watch mode
+pnpm test:run      # run tests once
+pnpm lint          # lint the project
+pnpm format        # format the project with Prettier
+pnpm format:check  # verify formatting without writing
+pnpm typecheck     # typecheck the project
 ```
+
+### Editor setup
+
+The project uses [Prettier](https://prettier.io) (single quotes, no
+semicolons) and ESLint. Install the recommended VS Code extensions
+(**Prettier** and **ESLint**) when prompted, then saving a file (`Ctrl+S`)
+formats it and applies ESLint fixes automatically. Files are also formatted and
+linted before every commit via Husky + lint-staged.
 
 ## License
 
