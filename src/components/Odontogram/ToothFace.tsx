@@ -50,10 +50,29 @@ export const ToothFace = memo(function ToothFace({
     onClick: disabled ? undefined : handleSelect,
   }
 
+  /** Centro aproximado del polígono/path para superponer la letra S.
+   * - Corona (polygon): viewBox 48×48 → centro en (24, 24).
+   * - Raíz  (path):    dibujada en 48×46 → centro en (24, 22).
+   */
+  const isSellado = status === 'selladoBueno' || status === 'selladoMalo'
+  const center = part === 'root' ? { cx: 24, cy: 22 } : { cx: 24, cy: 24 }
+
   return (
-    <g {...commonProps}>
-      {d ? <path d={d} /> : <polygon points={points} />}
-      <title>{`Diente ${tooth} · ${faceLabel(part)}`}</title>
+    <g>
+      <g {...commonProps}>
+        {d ? <path d={d} /> : <polygon points={points} />}
+        <title>{`Diente ${tooth} · ${faceLabel(part)}`}</title>
+      </g>
+      {isSellado && (
+        <text
+          className={styles.selladoMark}
+          x={center.cx}
+          y={center.cy}
+          aria-hidden="true"
+        >
+          S
+        </text>
+      )}
     </g>
   )
 })

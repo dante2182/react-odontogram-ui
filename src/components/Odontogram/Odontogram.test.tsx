@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { faceGeoms, mesialSide, rootPath, TEETH_ROWS } from './data'
 import { Odontogram } from './Odontogram'
-import styles from './Odontogram.module.css'
 
 const teeth = TEETH_ROWS.flatMap((row) => [...row.left, ...row.right])
 
@@ -63,7 +62,7 @@ describe('Odontogram', () => {
     ).toHaveLength(20)
   })
 
-  it('cycles normal → caries → treated → normal on click', async () => {
+  it('toggles paint on repeated clicks with the default mode', async () => {
     const user = userEvent.setup()
     const onChange = vi.fn()
     render(<Odontogram onChange={onChange} />)
@@ -72,9 +71,6 @@ describe('Odontogram', () => {
     await user.click(part)
     expect(onChange).toHaveBeenLastCalledWith({ 18: { root: 'caries' } })
     expect(part).toHaveAttribute('aria-pressed', 'true')
-
-    await user.click(part)
-    expect(onChange).toHaveBeenLastCalledWith({ 18: { root: 'treated' } })
 
     await user.click(part)
     expect(onChange).toHaveBeenLastCalledWith({})
@@ -104,7 +100,7 @@ describe('Odontogram', () => {
       />,
     )
 
-    await user.click(screen.getByRole('button', { name: 'Borrador' }))
+    await user.click(screen.getByRole('button', { name: 'Sano' }))
     const part = screen.getByRole('button', { name: 'Diente 11 · Raíz' })
     expect(part).toHaveAttribute('data-status', 'caries')
 
@@ -116,13 +112,11 @@ describe('Odontogram', () => {
     const user = userEvent.setup()
     render(<Odontogram />)
 
-    const treatedButton = screen.getByRole('button', {
-      name: 'Tratado / Buen estado',
-    })
-    expect(treatedButton).toHaveAttribute('aria-pressed', 'false')
-    await user.click(treatedButton)
-    expect(treatedButton).toHaveAttribute('aria-pressed', 'true')
-    expect(screen.getByRole('button', { name: 'Cíclico' })).toHaveAttribute(
+    const restauradoButton = screen.getByRole('button', { name: 'Restaurado' })
+    expect(restauradoButton).toHaveAttribute('aria-pressed', 'false')
+    await user.click(restauradoButton)
+    expect(restauradoButton).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: 'Caries' })).toHaveAttribute(
       'aria-pressed',
       'false',
     )
@@ -134,7 +128,7 @@ describe('Odontogram', () => {
     render(<Odontogram onChange={onChange} />)
 
     await user.click(screen.getByRole('button', { name: 'Diente 21 · Mesial' }))
-    await user.click(screen.getByRole('button', { name: 'Limpiar todo' }))
+    await user.click(screen.getByRole('button', { name: /Limpiar todo/ }))
     expect(onChange).toHaveBeenLastCalledWith({})
   })
 
@@ -142,21 +136,13 @@ describe('Odontogram', () => {
     const { container } = render(
       <Odontogram
         defaultValue={{
-          18: { root: 'caries', vestibular: 'treated' },
+          18: { root: 'caries', vestibular: 'restaurado' },
           48: { occlusal: 'caries' },
         }}
       />,
     )
-    const values = Array.from(
-      container.querySelectorAll(`.${styles.statValue}`),
-    ).map((el) => el.textContent)
-    expect(values).toEqual(['2', '1'])
-    expect(
-      screen.getByText('Caries / mal estado:', { exact: false }),
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('Tratado / buen estado:', { exact: false }),
-    ).toBeInTheDocument()
+    expect(container.textContent).toContain('Caries: 2')
+    expect(container.textContent).toContain('Restaurados: 1')
   })
 
   it('supports keyboard interaction', async () => {

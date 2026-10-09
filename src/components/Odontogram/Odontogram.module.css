@@ -1,13 +1,26 @@
 .root {
   --odonto-bg: #eef2f6;
-  --odonto-card: #f8fafc;
+  --odonto-card: rgba(255, 255, 255, 0.72);
   --odonto-text: #1f2937;
   --odonto-muted: #64748b;
   --odonto-line: #1f2937;
   --odonto-tooth: #ffffff;
-  --odonto-caries: #e5383b;
-  --odonto-treated: #1d6fe0;
   --odonto-border: #d5dce5;
+
+  /* Paleta clínica ampliada */
+  --odonto-caries: #ef4444; /* Caries — rojo */
+  --odonto-restaurado: #3b82f6; /* Restaurado — azul brillante */
+  --odonto-extraido: #4f46e5; /* Extraído — índigo */
+  --odonto-a-extraer: #f87171; /* A Extraer — rojo claro */
+  --odonto-ausente: #374151; /* Ausente — gris oscuro */
+  --odonto-corona-buena: #2563eb; /* Corona Buena — anillo azul */
+  --odonto-corona-mala: #dc2626; /* Corona Mala  — anillo rojo */
+  --odonto-sellado-bueno: #1d4ed8; /* Sellado Bueno — azul oscuro + S */
+  --odonto-sellado-malo: #b91c1c; /* Sellado Malo  — rojo oscuro + S */
+  --odonto-protesis-buena: #2563eb; /* Prótesis Buena — anillo ancho azul */
+  --odonto-protesis-mala: #dc2626; /* Prótesis Mala  — anillo ancho rojo */
+  --odonto-implante-bueno: #60a5fa; /* Implante Bueno — cuadrado azul */
+  --odonto-implante-malo: #f87171; /* Implante Malo  — cuadrado rojo */
 
   box-sizing: border-box;
   padding: 16px;
@@ -22,89 +35,109 @@
   border-radius: 12px;
 }
 
-.toolbar {
+/* ────────────────────────────────────────────────────────────── */
+/*  BARRA DE LEYENDA HORIZONTAL (glassmorphism estilo Raycast)   */
+/* ────────────────────────────────────────────────────────────── */
+.legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
   align-items: center;
   padding: 14px;
   margin-bottom: 14px;
-  border: 1px solid var(--odonto-border);
-  border-radius: 12px;
+  border: 1px solid rgba(213, 220, 229, 0.7);
+  border-radius: 14px;
   background: var(--odonto-card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 
-.toolbarTitle {
+.legendTitle {
   font-weight: 600;
   font-size: 0.85rem;
-  margin-right: 6px;
+  color: var(--odonto-muted);
+  margin-right: 4px;
+  padding-right: 10px;
+  border-right: 1px solid var(--odonto-border);
 }
 
-.mode {
+.chip {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 7px 12px;
-  border: 1.5px solid var(--odonto-border);
+  gap: 8px;
+  padding: 7px 14px 7px 10px;
+  border: 1.5px solid transparent;
   border-radius: 999px;
   cursor: pointer;
   font-size: 0.85rem;
   font-family: inherit;
   color: var(--odonto-text);
-  background: transparent;
+  background: rgba(255, 255, 255, 0.6);
+  transition: all 0.16s ease;
 }
 
-.mode[aria-pressed='true'] {
-  border-color: var(--odonto-text);
+.chip:hover:not([aria-disabled='true']) {
+  background: rgba(255, 255, 255, 0.92);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.chip[aria-pressed='true'] {
+  background: #ffffff;
+  border-color: var(--odonto-line);
   font-weight: 600;
+  box-shadow:
+    0 6px 16px rgba(15, 23, 42, 0.1),
+    0 0 0 1px rgba(31, 41, 55, 0.04) inset;
 }
 
-.mode:disabled {
+.chip:disabled,
+.chip[aria-disabled='true'] {
   cursor: not-allowed;
   opacity: 0.5;
 }
 
-.mode:focus-visible {
+.chip:focus-visible {
   outline: 2px solid var(--odonto-line);
   outline-offset: 2px;
 }
 
-.swatch {
-  width: 14px;
-  height: 14px;
-  border: 1.5px solid var(--odonto-line);
-  border-radius: 3px;
-  background: var(--odonto-tooth);
+/* Swatch pequeño que va dentro del chip */
+.icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.swatchCaries {
-  background: var(--odonto-caries);
+.icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
-.swatchTreated {
-  background: var(--odonto-treated);
-}
-
-.spacer {
-  flex: 1;
+.actions {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .stats {
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
-  margin-top: 10px;
-  width: 100%;
+  padding: 4px 14px 12px;
   font-size: 0.82rem;
   color: var(--odonto-muted);
 }
 
 .stats b {
   color: var(--odonto-text);
-}
-
-.statValue {
-  color: var(--odonto-text);
+  font-weight: 600;
 }
 
 .scroll {
@@ -157,17 +190,30 @@
   overflow: visible;
 }
 
+/* ────────────────────────────────────────────────────────────── */
+/*  ESTADOS CLÍNICOS DE LAS CARAS DEL DIENTE (SVG polygon/path)  */
+/* ────────────────────────────────────────────────────────────── */
 .part {
   fill: var(--odonto-tooth);
   stroke: var(--odonto-line);
   stroke-width: 1.2;
   stroke-linejoin: round;
   cursor: pointer;
-  transition: filter 0.12s;
+  transition:
+    filter 0.16s ease,
+    transform 0.1s ease,
+    fill 0.2s ease,
+    stroke 0.2s ease;
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 .part:hover {
-  filter: brightness(0.88);
+  filter: brightness(0.9);
+}
+
+.part:active {
+  transform: scale(0.96);
 }
 
 .part:focus-visible {
@@ -175,17 +221,128 @@
   outline-offset: 1px;
 }
 
-.part[data-status='caries'] {
-  fill: var(--odonto-caries);
-}
-
-.part[data-status='treated'] {
-  fill: var(--odonto-treated);
-}
-
 .part[aria-disabled='true'] {
   cursor: not-allowed;
   opacity: 0.7;
+}
+
+/* ◼️ Rellenos sólidos */
+.part[data-status='caries'] {
+  fill: var(--odonto-caries);
+}
+.part[data-status='restaurado'] {
+  fill: var(--odonto-restaurado);
+}
+.part[data-status='extraido'] {
+  fill: var(--odonto-extraido);
+}
+.part[data-status='aExtraer'] {
+  fill: var(--odonto-a-extraer);
+}
+.part[data-status='ausente'] {
+  fill: var(--odonto-ausente);
+}
+
+/* ⬛ Implantes (cuadrado = fill + stroke ancho cuadrado aproximado).
+   Se usan únicamente como fallback; el diseño principal reemplaza todo
+   el diente por <ImplantSvg /> a nivel Tooth. */
+.part[data-status='implanteBueno'] {
+  fill: var(--odonto-implante-bueno);
+  stroke: var(--odonto-sellado-bueno);
+  stroke-width: 1.6;
+}
+.part[data-status='implanteMalo'] {
+  fill: var(--odonto-implante-malo);
+  stroke: var(--odonto-sellado-malo);
+  stroke-width: 1.6;
+}
+
+/* 🔤 Antigua letra S superpuesta sobre sellados POR CARA (ToothFace).
+   Conservada por compatibilidad; el nuevo diseño usa SelladoMarkOverlay
+   a nivel Tooth (diente entero) y NO usa estos estilos. */
+.selladoMark {
+  pointer-events: none;
+  fill: #ffffff;
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  dominant-baseline: central;
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: rgba(0, 0, 0, 0.35);
+  stroke-width: 1px;
+  display: none; /* ← desactivado; overlays de diente-entero lo reemplazan */
+}
+
+/* Los status de corona / prótesis / sellado / cruzado a nivel cara-individual
+   ahora NO colorean la cara directamente (es un OVERLAY a nivel diente-entero),
+   así que los normalizamos para que no alteren el diente de base. */
+.part[data-status='coronaBuena'],
+.part[data-status='coronaMala'],
+.part[data-status='protesisBuena'],
+.part[data-status='protesisMala'],
+.part[data-status='selladoBueno'],
+.part[data-status='selladoMalo'],
+.part[data-status='extraido'],
+.part[data-status='aExtraer'],
+.part[data-status='ausente'] {
+  fill: var(--odonto-tooth);
+  stroke: var(--odonto-line);
+  stroke-width: 1.2;
+}
+
+/* ────────────────────────────────────────────────────────────── */
+/*  Visuales especiales A NIVEL DE DIENTE ENTERO                 */
+/* ────────────────────────────────────────────────────────────── */
+
+/* Diente atenuado cuando hay una cruz de extraído / ausente. */
+.dimTooth {
+  opacity: 0.55;
+  filter: grayscale(0.25) brightness(1.05);
+}
+.dimTooth .part {
+  stroke: rgba(31, 41, 55, 0.55);
+}
+
+/* Cruz X superpuesta en la corona — NO intercepta clicks */
+.crossOverlay {
+  pointer-events: none;
+  filter: drop-shadow(0 1px 1px rgba(15, 23, 42, 0.25));
+}
+
+/* Anillos / sellados / prótesis superpuestos sobre la corona — NO intercepta clicks */
+.toothRingOverlay {
+  pointer-events: none;
+  filter: drop-shadow(0 2px 3px rgba(15, 23, 42, 0.22));
+}
+
+/* Implante = tornillo dental completo (reemplaza diente normal) */
+.implant {
+  transition:
+    filter 0.16s ease,
+    transform 0.1s ease;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.implant:hover {
+  filter: brightness(0.94);
+}
+.implant:active {
+  transform: scale(0.96);
+}
+
+/* Hitbox invisible que envuelve todo el implante para clicks */
+.implantHit {
+  transition: filter 0.1s ease;
+}
+.implantHit:focus-visible {
+  outline: 2px solid var(--odonto-line);
+  outline-offset: 1px;
 }
 
 .gap {

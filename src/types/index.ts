@@ -1,6 +1,21 @@
 export type ToothNumber = number
 
-export type ToothStatus = 'normal' | 'caries' | 'treated'
+/** Todos los estados clínicos que puede tener una cara del diente. */
+export type ToothStatus =
+  | 'normal'
+  | 'caries'
+  | 'restaurado'
+  | 'extraido'
+  | 'aExtraer'
+  | 'ausente'
+  | 'coronaBuena'
+  | 'coronaMala'
+  | 'selladoBueno'
+  | 'selladoMalo'
+  | 'protesisBuena'
+  | 'protesisMala'
+  | 'implanteBueno'
+  | 'implanteMalo'
 
 export type ToothPart =
   'root' | 'vestibular' | 'lingual' | 'mesial' | 'distal' | 'occlusal'
@@ -9,7 +24,8 @@ export type ToothPartStatuses = Partial<Record<ToothPart, ToothStatus>>
 
 export type OdontogramValue = Partial<Record<ToothNumber, ToothPartStatuses>>
 
-export type PaintMode = 'cycle' | 'caries' | 'treated' | 'eraser'
+/** Modo de pintado = estado que aplicar al hacer clic. No existe más el modo cíclico. */
+export type PaintMode = Exclude<ToothStatus, 'normal'> | 'sano'
 
 export type Dentition = 'all' | 'permanent' | 'deciduous'
 

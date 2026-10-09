@@ -3,14 +3,20 @@ export {
   countStatuses,
   faceGeoms,
   faceLabel,
+  LEGEND,
   mesialSide,
   nextStatus,
   quadrantOf,
   rootPath,
   TEETH_ROWS,
-  CYCLE,
 } from './components/Odontogram/data'
-export type { ToothRow, ToothFaceGeom } from './components/Odontogram/data'
+export type {
+  LegendItem,
+  LegendShape,
+  StatusCounts,
+  ToothFaceGeom,
+  ToothRow,
+} from './components/Odontogram/data'
 export type {
   Dentition,
   OdontogramProps,

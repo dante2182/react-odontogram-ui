@@ -129,37 +129,177 @@ export function faceGeoms(
   ]
 }
 
-/** Painting cycle used by the MINSA "Cíclico" mode. */
-export const CYCLE: readonly ToothStatus[] = ['normal', 'caries', 'treated']
+import type { PaintMode } from '../../types'
 
-/** Mirror of the reference `applyClick` painting logic. */
-export function nextStatus(
-  current: ToothStatus,
-  mode: 'cycle' | 'caries' | 'treated' | 'eraser',
-): ToothStatus {
-  switch (mode) {
-    case 'cycle':
-      return CYCLE[(CYCLE.indexOf(current) + 1) % CYCLE.length] ?? 'normal'
-    case 'eraser':
-      return 'normal'
-    case 'caries':
-    case 'treated':
-      return current === mode ? 'normal' : mode
-  }
+/** Estilos visuales de la leyenda: cómo se dibuja cada afección. */
+export type LegendShape =
+  | 'solid' // círculo relleno (caries, restaurado, etc)
+  | 'ring' // solo borde (coronas)
+  | 'ringProst' // borde apaisado (prótesis)
+  | 'letterS' // círculo + letra "S" (sellados)
+  | 'square' // cuadrado (implantes)
+
+export interface LegendItem {
+  id: PaintMode
+  label: string
+  /** Token CSS del color principal (fill / stroke). */
+  color: string
+  shape: LegendShape
 }
 
-export function countStatuses(value: OdontogramValue): {
+/** Barra de leyenda HORIZONTAL. Orden y propiedades coinciden con el diseño clínico. */
+export const LEGEND: readonly LegendItem[] = [
+  {
+    id: 'caries',
+    label: 'Caries',
+    color: 'var(--odonto-caries)',
+    shape: 'solid',
+  },
+  {
+    id: 'restaurado',
+    label: 'Restaurado',
+    color: 'var(--odonto-restaurado)',
+    shape: 'solid',
+  },
+  { id: 'sano', label: 'Sano', color: 'var(--odonto-tooth)', shape: 'solid' },
+  {
+    id: 'extraido',
+    label: 'Extraído',
+    color: 'var(--odonto-extraido)',
+    shape: 'solid',
+  },
+  {
+    id: 'aExtraer',
+    label: 'A Extraer',
+    color: 'var(--odonto-a-extraer)',
+    shape: 'solid',
+  },
+  {
+    id: 'ausente',
+    label: 'Ausente',
+    color: 'var(--odonto-ausente)',
+    shape: 'solid',
+  },
+  {
+    id: 'coronaBuena',
+    label: 'Corona Buena',
+    color: 'var(--odonto-corona-buena)',
+    shape: 'ring',
+  },
+  {
+    id: 'coronaMala',
+    label: 'Corona Mala',
+    color: 'var(--odonto-corona-mala)',
+    shape: 'ring',
+  },
+  {
+    id: 'selladoBueno',
+    label: 'Sellado Bueno',
+    color: 'var(--odonto-sellado-bueno)',
+    shape: 'letterS',
+  },
+  {
+    id: 'selladoMalo',
+    label: 'Sellado Malo',
+    color: 'var(--odonto-sellado-malo)',
+    shape: 'letterS',
+  },
+  {
+    id: 'protesisBuena',
+    label: 'Prótesis Buena',
+    color: 'var(--odonto-protesis-buena)',
+    shape: 'ringProst',
+  },
+  {
+    id: 'protesisMala',
+    label: 'Prótesis Mala',
+    color: 'var(--odonto-protesis-mala)',
+    shape: 'ringProst',
+  },
+  {
+    id: 'implanteBueno',
+    label: 'Implante Bueno',
+    color: 'var(--odonto-implante-bueno)',
+    shape: 'square',
+  },
+  {
+    id: 'implanteMalo',
+    label: 'Implante Malo',
+    color: 'var(--odonto-implante-malo)',
+    shape: 'square',
+  },
+] as const
+
+/** Pintado DIRECTO (sin ciclo):
+ * - `sano` = siempre vuelve a normal (borrador).
+ * - Cualquier otro modo = toggle sobre ese estado puntual: si ya lo tenía → normal; si no → lo aplica.
+ */
+export function nextStatus(current: ToothStatus, mode: PaintMode): ToothStatus {
+  if (mode === 'sano') return 'normal'
+  return current === mode ? 'normal' : mode
+}
+
+export interface StatusCounts {
   caries: number
-  treated: number
-} {
-  let caries = 0
-  let treated = 0
+  restaurado: number
+  extraido: number
+  aExtraer: number
+  ausente: number
+  corona: number
+  sellado: number
+  protesis: number
+  implante: number
+}
+
+export function countStatuses(value: OdontogramValue): StatusCounts {
+  const counts: StatusCounts = {
+    caries: 0,
+    restaurado: 0,
+    extraido: 0,
+    aExtraer: 0,
+    ausente: 0,
+    corona: 0,
+    sellado: 0,
+    protesis: 0,
+    implante: 0,
+  }
   for (const tooth of Object.values(value)) {
     if (!tooth) continue
     for (const status of Object.values(tooth)) {
-      if (status === 'caries') caries += 1
-      else if (status === 'treated') treated += 1
+      switch (status) {
+        case 'caries':
+          counts.caries += 1
+          break
+        case 'restaurado':
+          counts.restaurado += 1
+          break
+        case 'extraido':
+          counts.extraido += 1
+          break
+        case 'aExtraer':
+          counts.aExtraer += 1
+          break
+        case 'ausente':
+          counts.ausente += 1
+          break
+        case 'coronaBuena':
+        case 'coronaMala':
+          counts.corona += 1
+          break
+        case 'selladoBueno':
+        case 'selladoMalo':
+          counts.sellado += 1
+          break
+        case 'protesisBuena':
+        case 'protesisMala':
+          counts.protesis += 1
+          break
+        case 'implanteBueno':
+        case 'implanteMalo':
+          counts.implante += 1
+          break
+      }
     }
   }
-  return { caries, treated }
+  return counts
 }
