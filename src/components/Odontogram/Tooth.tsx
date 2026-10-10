@@ -199,9 +199,8 @@ function ProsthesisRingOverlay({
 }
 
 /* ──────────────────────────────────────────────────────────────────── */
-/*  IMPLANTE — SVG de tornillo dental con base cuadrada (cabeza)      */
-/*  Dibujado con la «cabeza» arriba (y=0) y «tornillo» abajo (y=96).  */
-/*  Luego se aplica flip vertical si es mandíbula (lower).            */
+/*  IMPLANTE — SVG de tornillo dental (cabeza arriba, tornillo abajo) */
+/*  Flip vertical solo en el arco superior para alinearse.           */
 /* ──────────────────────────────────────────────────────────────────── */
 function ImplantSvg({ status }: { status: 'implanteBueno' | 'implanteMalo' }) {
   const fill =
@@ -282,7 +281,7 @@ export const Tooth = memo(function Tooth({
   // Todos los overlays (excepto Implante completo) van en la zona corona (48x48).
   const rootTransform = upper ? undefined : 'translate(0,96) scale(1,-1)'
   const crownTransform = `translate(0,${upper ? 48 : 0})`
-  const implantFlip = upper ? undefined : 'translate(0,96) scale(1,-1)'
+  const implantFlip = upper ? 'translate(0,96) scale(1,-1)' : undefined
   const overlayZone = `translate(0,${upper ? 48 : 0})` // zona 48x48 de la corona
 
   // Atenuación: solo la cruz "apaga" visualmente el diente de base
