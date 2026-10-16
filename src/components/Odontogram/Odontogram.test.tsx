@@ -175,3 +175,109 @@ describe('Odontogram', () => {
     expect(part).toHaveAttribute('data-status', 'caries')
   })
 })
+
+describe('Odontogram · onPartChange', () => {
+  it('emits from/to for a per-face change', async () => {
+    const user = userEvent.setup()
+    const onPartChange = vi.fn()
+    render(<Odontogram dentition="permanent" onPartChange={onPartChange} />)
+
+    await user.click(screen.getByRole('button', { name: 'Diente 18 · Raíz' }))
+
+    expect(onPartChange).toHaveBeenCalledTimes(1)
+    expect(onPartChange).toHaveBeenLastCalledWith({
+      tooth: 18,
+      part: 'root',
+      from: 'normal',
+      to: 'caries',
+    })
+  })
+
+  it('reports the clicked part for whole-tooth modes', async () => {
+    const user = userEvent.setup()
+    const onPartChange = vi.fn()
+    render(<Odontogram dentition="permanent" onPartChange={onPartChange} />)
+
+    await user.click(screen.getByRole('button', { name: 'Extraído' }))
+    await user.click(
+      screen.getByRole('button', { name: 'Diente 18 · Oclusal' }),
+    )
+
+    expect(onPartChange).toHaveBeenLastCalledWith({
+      tooth: 18,
+      part: 'occlusal',
+      from: 'normal',
+      to: 'extraido',
+    })
+  })
+
+  it('does not emit when nothing really changed', async () => {
+    const user = userEvent.setup()
+    const onPartChange = vi.fn()
+    render(
+      <Odontogram
+        dentition="permanent"
+        mode="sano"
+        onPartChange={onPartChange}
+      />,
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Diente 18 · Raíz' }))
+
+    expect(onPartChange).not.toHaveBeenCalled()
+  })
+
+  it('does not emit in readOnly or disabled', async () => {
+    const user = userEvent.setup()
+    const onPartChange = vi.fn()
+
+    const readOnly = render(
+      <Odontogram dentition="permanent" readOnly onPartChange={onPartChange} />,
+    )
+    await user.click(
+      within(readOnly.container).getByRole('button', {
+        name: 'Diente 18 · Raíz',
+      }),
+    )
+    expect(onPartChange).not.toHaveBeenCalled()
+
+    const disabled = render(
+      <Odontogram dentition="permanent" disabled onPartChange={onPartChange} />,
+    )
+    await user.click(
+      within(disabled.container).getByRole('button', {
+        name: 'Diente 18 · Raíz',
+      }),
+    )
+    expect(onPartChange).not.toHaveBeenCalled()
+  })
+})
+
+describe('Odontogram · highlightTeeth', () => {
+  it('marks only the indicated teeth', () => {
+    const { container } = render(
+      <Odontogram dentition="permanent" highlightTeeth={[18, 21]} />,
+    )
+
+    const marked = container.querySelectorAll('[data-highlighted="true"]')
+    expect(marked).toHaveLength(2)
+
+    expect(
+      within(marked[0] as HTMLElement).getByRole('button', {
+        name: 'Diente 18 · Raíz',
+      }),
+    ).toBeInTheDocument()
+    expect(
+      within(marked[1] as HTMLElement).getByRole('button', {
+        name: 'Diente 21 · Raíz',
+      }),
+    ).toBeInTheDocument()
+  })
+
+  it('marks nothing when the prop is omitted', () => {
+    const { container } = render(<Odontogram dentition="permanent" />)
+    expect(
+      container.querySelectorAll('[data-highlighted="true"]'),
+    ).toHaveLength(0)
+  })
+})
