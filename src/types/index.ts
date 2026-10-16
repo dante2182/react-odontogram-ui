@@ -1,24 +1,17 @@
+import {
+  TOOTH_PARTS,
+  TOOTH_STATUSES,
+} from '../components/Odontogram/serialization'
+
 export type ToothNumber = number
 
-/** Todos los estados clínicos que puede tener una cara del diente. */
-export type ToothStatus =
-  | 'normal'
-  | 'caries'
-  | 'restaurado'
-  | 'extraido'
-  | 'aExtraer'
-  | 'ausente'
-  | 'coronaBuena'
-  | 'coronaMala'
-  | 'selladoBueno'
-  | 'selladoMalo'
-  | 'protesisBuena'
-  | 'protesisMala'
-  | 'implanteBueno'
-  | 'implanteMalo'
+/** Todos los estados clínicos que puede tener una cara del diente.
+ *  Derivados de `TOOTH_STATUSES` para que las constantes de runtime y los
+ *  tipos no puedan divergir (fuente única de verdad). */
+export type ToothStatus = (typeof TOOTH_STATUSES)[number]
 
-export type ToothPart =
-  'root' | 'vestibular' | 'lingual' | 'mesial' | 'distal' | 'occlusal'
+/** Las seis partes pintables de un diente, derivadas de `TOOTH_PARTS`. */
+export type ToothPart = (typeof TOOTH_PARTS)[number]
 
 export type ToothPartStatuses = Partial<Record<ToothPart, ToothStatus>>
 
