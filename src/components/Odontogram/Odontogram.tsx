@@ -10,6 +10,7 @@ import type {
   OdontogramProps,
   OdontogramValue,
   PaintMode,
+  PartChangeEvent,
   ToothPart,
   ToothStatus,
 } from '../../types'
@@ -217,6 +218,8 @@ export function Odontogram({
   value,
   defaultValue,
   onChange,
+  onPartChange,
+  highlightTeeth,
   mode,
   defaultMode = 'caries',
   onModeChange,
@@ -251,6 +254,11 @@ export function Odontogram({
     onChangeRef.current = onChange
   }, [onChange])
 
+  const onPartChangeRef = useRef(onPartChange)
+  useEffect(() => {
+    onPartChangeRef.current = onPartChange
+  }, [onPartChange])
+
   const onModeChangeRef = useRef(onModeChange)
   useEffect(() => {
     onModeChangeRef.current = onModeChange
@@ -258,7 +266,22 @@ export function Odontogram({
 
   const handleSelect = useCallback(
     (tooth: number, part: ToothPart) => {
-      const next = applyPart(valueRef.current, tooth, part, modeRef.current)
+      const previous = valueRef.current
+      const next = applyPart(previous, tooth, part, modeRef.current)
+
+      // Emit the fine-grained event only when the clicked part really changed.
+      // Computed from the previous/next values so `handleSelect` stays stable
+      // and the `memo` of Tooth/ToothFace keeps working.
+      const emitPartChange = onPartChangeRef.current
+      if (emitPartChange) {
+        const from = previous[tooth]?.[part] ?? 'normal'
+        const to = next[tooth]?.[part] ?? 'normal'
+        if (from !== to) {
+          const event: PartChangeEvent = { tooth, part, from, to }
+          emitPartChange(event)
+        }
+      }
+
       if (!isControlled) {
         setInternalValue(next)
       }
@@ -297,6 +320,14 @@ export function Odontogram({
   )
 
   const stats = useMemo(() => countStatuses(currentValue), [currentValue])
+
+  const highlightedSet = useMemo(
+    () =>
+      highlightTeeth && highlightTeeth.length > 0
+        ? new Set(highlightTeeth)
+        : undefined,
+    [highlightTeeth],
+  )
 
   const rootClassName = className ? `${styles.root} ${className}` : styles.root
 
@@ -381,6 +412,7 @@ export function Odontogram({
                   row={row}
                   value={currentValue}
                   disabled={!interactive}
+                  highlightSet={highlightedSet}
                   onSelect={handleSelect}
                 />
               )
@@ -397,6 +429,7 @@ export function Odontogram({
                   row={row}
                   value={currentValue}
                   disabled={!interactive}
+                  highlightSet={highlightedSet}
                   onSelect={handleSelect}
                 />
               </Fragment>
@@ -412,10 +445,11 @@ interface RowProps {
   row: ToothRow
   value: OdontogramValue
   disabled: boolean
+  highlightSet?: ReadonlySet<number>
   onSelect: (tooth: number, part: ToothPart) => void
 }
 
-function Row({ row, value, disabled, onSelect }: RowProps) {
+function Row({ row, value, disabled, highlightSet, onSelect }: RowProps) {
   return (
     <div className={styles.row}>
       <div className={`${styles.half} ${styles.halfLeft}`}>
@@ -427,6 +461,7 @@ function Row({ row, value, disabled, onSelect }: RowProps) {
             deciduous={row.deciduous}
             statuses={value[tooth]}
             disabled={disabled}
+            highlighted={highlightSet?.has(tooth) ?? false}
             onSelect={onSelect}
           />
         ))}
@@ -440,6 +475,7 @@ function Row({ row, value, disabled, onSelect }: RowProps) {
             deciduous={row.deciduous}
             statuses={value[tooth]}
             disabled={disabled}
+            highlighted={highlightSet?.has(tooth) ?? false}
             onSelect={onSelect}
           />
         ))}

@@ -264,6 +264,8 @@ interface ToothProps {
   deciduous: boolean
   statuses: ToothPartStatuses | undefined
   disabled: boolean
+  /** Booleans (not the whole array) keep `memo` effective. */
+  highlighted?: boolean
   onSelect: (tooth: ToothNumber, part: ToothPart) => void
 }
 
@@ -273,6 +275,7 @@ export const Tooth = memo(function Tooth({
   deciduous,
   statuses,
   disabled,
+  highlighted = false,
   onSelect,
 }: ToothProps) {
   const geoms = useMemo(() => faceGeoms(tooth, deciduous), [deciduous, tooth])
@@ -290,7 +293,10 @@ export const Tooth = memo(function Tooth({
   const skipTooth = override.kind === 'implant'
 
   return (
-    <div className={styles.tooth}>
+    <div
+      className={styles.tooth}
+      data-highlighted={highlighted ? 'true' : undefined}
+    >
       <span className={styles.toothNumber}>{tooth}</span>
       <svg
         className={styles.toothSvg}

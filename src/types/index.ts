@@ -22,10 +22,22 @@ export type PaintMode = Exclude<ToothStatus, 'normal'> | 'sano'
 
 export type Dentition = 'all' | 'permanent' | 'deciduous'
 
+/** Payload emitted once per click by `onPartChange`, only when something changed. */
+export interface PartChangeEvent {
+  tooth: ToothNumber
+  part: ToothPart
+  from: ToothStatus
+  to: ToothStatus
+}
+
 export interface OdontogramProps {
   value?: OdontogramValue
   defaultValue?: OdontogramValue
   onChange?: (value: OdontogramValue) => void
+  /** Fired once per click (alongside `onChange`) when a part really changed. */
+  onPartChange?: (event: PartChangeEvent) => void
+  /** Tooth numbers to visually highlight (e.g. the result of `diffValues`). */
+  highlightTeeth?: number[]
   mode?: PaintMode
   defaultMode?: PaintMode
   onModeChange?: (mode: PaintMode) => void
