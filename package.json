@@ -26,7 +26,8 @@
     "**/*.css"
   ],
   "files": [
-    "dist"
+    "dist",
+    "schema"
   ],
   "main": "./dist/odontogram-ui.cjs",
   "module": "./dist/odontogram-ui.js",
@@ -46,11 +47,13 @@
       "types": "./dist/odontogram-ui.css.d.ts",
       "default": "./dist/odontogram-ui.css"
     },
+    "./schema.json": "./schema/odontogram.schema.json",
     "./package.json": "./package.json"
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/postbuild.mjs",
+    "build": "vite build",
+    "postbuild": "node scripts/postbuild.mjs && node scripts/generate-schema.mjs",
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",

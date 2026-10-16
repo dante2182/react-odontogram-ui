@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dante2182/odontogram-ui/schema/odontogram.schema.json",
+  "title": "OdontogramValue",
+  "description": "Odontograma persistido por consulta (esquema v2). Las claves son dientes FDI y los valores son mapas de parte a estado.",
+  "type": "object",
+  "propertyNames": {
+    "enum": [
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "21",
+      "22",
+      "23",
+      "24",
+      "25",
+      "26",
+      "27",
+      "28",
+      "31",
+      "32",
+      "33",
+      "34",
+      "35",
+      "36",
+      "37",
+      "38",
+      "41",
+      "42",
+      "43",
+      "44",
+      "45",
+      "46",
+      "47",
+      "48",
+      "51",
+      "52",
+      "53",
+      "54",
+      "55",
+      "61",
+      "62",
+      "63",
+      "64",
+      "65",
+      "71",
+      "72",
+      "73",
+      "74",
+      "75",
+      "81",
+      "82",
+      "83",
+      "84",
+      "85"
+    ]
+  },
+  "additionalProperties": {
+    "$ref": "#/$defs/tooth"
+  },
+  "$defs": {
+    "tooth": {
+      "type": "object",
+      "description": "Un diente: mapa de parte (root, vestibular, lingual, mesial, distal, occlusal) a estado clínico.",
+      "properties": {
+        "root": {
+          "$ref": "#/$defs/status"
+        },
+        "vestibular": {
+          "$ref": "#/$defs/status"
+        },
+        "lingual": {
+          "$ref": "#/$defs/status"
+        },
+        "mesial": {
+          "$ref": "#/$defs/status"
+        },
+        "distal": {
+          "$ref": "#/$defs/status"
+        },
+        "occlusal": {
+          "$ref": "#/$defs/status"
+        }
+      },
+      "additionalProperties": false
+    },
+    "status": {
+      "description": "Estado clínico de una parte del diente.",
+      "enum": [
+        "normal",
+        "caries",
+        "restaurado",
+        "extraido",
+        "aExtraer",
+        "ausente",
+        "coronaBuena",
+        "coronaMala",
+        "selladoBueno",
+        "selladoMalo",
+        "protesisBuena",
+        "protesisMala",
+        "implanteBueno",
+        "implanteMalo"
+      ]
+    }
+  }
+}
