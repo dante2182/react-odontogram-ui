@@ -37,6 +37,11 @@
       "import": "./dist/odontogram-ui.js",
       "require": "./dist/odontogram-ui.cjs"
     },
+    "./validate": {
+      "types": "./dist/validate.d.ts",
+      "import": "./dist/validate.js",
+      "require": "./dist/validate.cjs"
+    },
     "./style.css": {
       "types": "./dist/odontogram-ui.css.d.ts",
       "default": "./dist/odontogram-ui.css"

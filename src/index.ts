@@ -17,11 +17,23 @@ export type {
   ToothFaceGeom,
   ToothRow,
 } from './components/Odontogram/data'
+export {
+  diffValues,
+  isEmptyValue,
+  isEqualValue,
+  migrateValue,
+  normalizeValue,
+  SCHEMA_VERSION,
+  TOOTH_PARTS,
+  TOOTH_STATUSES,
+  validateValue,
+} from './components/Odontogram/serialization'
 export type {
   Dentition,
   OdontogramProps,
   OdontogramValue,
   PaintMode,
+  PartChangeEvent,
   ToothNumber,
   ToothPart,
   ToothPartStatuses,

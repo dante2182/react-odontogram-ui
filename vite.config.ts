@@ -23,11 +23,18 @@ export default defineConfig({
   build: {
     copyPublicDir: false,
     lib: {
-      entry: fileURLToPath(new URL('./src/index.ts', import.meta.url)),
+      entry: {
+        index: fileURLToPath(new URL('./src/index.ts', import.meta.url)),
+        validate: fileURLToPath(new URL('./src/validate.ts', import.meta.url)),
+      },
       name: 'OdontogramUI',
       formats: ['es', 'cjs'],
-      fileName: (format) =>
-        format === 'es' ? 'odontogram-ui.js' : 'odontogram-ui.cjs',
+      fileName: (format, entryName) => {
+        if (entryName === 'validate') {
+          return format === 'es' ? 'validate.js' : 'validate.cjs'
+        }
+        return format === 'es' ? 'odontogram-ui.js' : 'odontogram-ui.cjs'
+      },
       cssFileName: 'odontogram-ui',
     },
     rollupOptions: {
